@@ -16,7 +16,7 @@ const (
 	CONN_HOST        = "localhost"
 	CONN_PORT        = "8080"
 	DRIVER_NAME      = "mysql"
-	DATA_SOURCE_NAME = "root:''!Aa@12345''(localhost:8080)/mydb"
+	DATA_SOURCE_NAME = "root:password@/mydb"
 )
 
 var db *sql.DB
