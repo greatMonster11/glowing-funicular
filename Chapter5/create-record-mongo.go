@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+
 	mgo "gopkg.in/mgo.v2"
 )
 
@@ -20,14 +21,14 @@ var session *mgo.Session
 var connectionError error
 
 type Employee struct {
-	Id   string `json:"uid"`
+	Id   int    `json:"uid"`
 	Name string `json:"name"`
 }
 
 func init() {
 	session, connectionError = mgo.Dial(MONGO_DB_URL)
 	if connectionError != nil {
-		log.Fatal("error connecting to database ::", connectionError)
+		log.Fatal("error connecting to database :: ", connectionError)
 	}
 	session.SetMode(mgo.Monotonic, true)
 }
@@ -46,19 +47,18 @@ func createDocument(w http.ResponseWriter, r *http.Request) {
 		collection := session.DB("mydb").C("employee")
 		err = collection.Insert(&Employee{employeeId, name[0]})
 		if err != nil {
-			log.Print("erorr occurred while inserting document in database :: ", err)
+			log.Print("error occurred while inserting document in database :: ", err)
 			return
 		}
-		fmt.Fprint(w, "Last created document id is :: %s", id[0])
+		fmt.Fprintf(w, "Last created document id is :: %s", id[0])
 	} else {
-		fmt.Fprint(w, "Erorr occurred while creating document in database for name :: %s", name[0])
+		fmt.Fprintf(w, "Error occurred while creating document in database for name :: %s", name[0])
 	}
 }
 
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/employee/create", createDocument).Methods("POST")
-
 	defer session.Close()
 	err := http.ListenAndServe(CONN_HOST+":"+CONN_PORT, router)
 	if err != nil {
