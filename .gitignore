@@ -47,6 +47,7 @@ Temporary Items
 .apdisk
 
 # For local installed packages, log files 
+bin/
 *.log 
 pkg/
 src/
